@@ -4,9 +4,6 @@ on:
   workflow_dispatch:
   push:
 
-permissions:
-  contents: write
-
 jobs:
   mod:
     runs-on: ubuntu-latest
@@ -20,7 +17,7 @@ jobs:
           - { mc: '1.21.2', yarn: '1.21.2+build.1', api: '0.106.1+1.21.2', compat: new, loom: '1.9-SNAPSHOT' }
           - { mc: '1.21.3', yarn: '1.21.3+build.2', api: '0.114.1+1.21.3', compat: new, loom: '1.9-SNAPSHOT' }
           - { mc: '1.21.4', yarn: '1.21.4+build.8', api: '0.119.4+1.21.4', compat: new, loom: '1.9-SNAPSHOT' }
-          - { mc: '1.21.5', yarn: '1.21.5+build.1', api: '0.128.2+1.21.5', compat: new, loom: '1.10-SNAPSHOT' }
+          - { mc: '1.21.5', yarn: '1.21.5+build.1', api: '0.128.2+1.21.5', compat: new, loom: '1.9-SNAPSHOT' }
           - { mc: '1.21.6', yarn: '1.21.6+build.1', api: '0.128.2+1.21.6', compat: v6, loom: '1.10-SNAPSHOT' }
           - { mc: '1.21.7', yarn: '1.21.7+build.8', api: '0.129.0+1.21.7', compat: v6, loom: '1.10-SNAPSHOT' }
           - { mc: '1.21.8', yarn: '1.21.8+build.1', api: '0.136.1+1.21.8', compat: v6, loom: '1.10-SNAPSHOT' }
@@ -46,6 +43,8 @@ jobs:
   win:
     runs-on: windows-latest
     needs: mod
+    permissions:
+      contents: write   # potrzebne do utworzenia wydania (Release) z instalatorem – z niego pobierają się aktualizacje w aplikacji
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -56,11 +55,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      # każda budowa dostaje nowszy numer wersji, dzięki czemu zainstalowana aplikacja widzi aktualizację
+      - run: npm version 1.2.${{ github.run_number }} --no-git-tag-version
+        shell: bash
       - run: npm install
       - run: npm run dist
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
           name: Kaczo-Client-Setup
           path: dist/*Setup*.exe
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.2.${{ github.run_number }}
+          name: Kaczo Client 1.2.${{ github.run_number }}
+          generate_release_notes: true
+          files: |
+            dist/*Setup*.exe
+            dist/*.blockmap
+            dist/latest.yml
