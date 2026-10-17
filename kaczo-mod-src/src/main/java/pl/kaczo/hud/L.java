@@ -66,6 +66,7 @@ public class L {
             {"Intro animation", "Animacja wejścia"}, {"Title logo size %", "Rozmiar logo %"}, {"Show key hint", "Pokaż podpowiedź klawisza"},
             {"Kaczo Badge", "Plakietka Kaczo"}, {"Glass badge with the Kaczo Client logo.", "Szklana plakietka z logo Kaczo Client."},
             {"Right Shift = menu", "Prawy Shift = menu"}, {"Animate HUD on join", "Animuj HUD po wejściu"},
+            {"Animated title background", "Animowane tło ekranu tytułowego"}, {"Custom loading screen", "Własny ekran ładowania"},
             {"Lines", "Linijki"}, {"Min width", "Min. szerokość"},
         };
         for (String[] e : p) PL.put(e[0], e[1]);

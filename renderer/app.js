@@ -63,6 +63,37 @@ const SPLASH = {
   en: ['Quack!', 'Now with ducks!', 'Still awake?', '100% pixels!', 'Watch out for creepers!', 'Remember a bed!', 'More FPS!', 'Never dig straight down!', 'Fresh build!', 'Mined with love!'],
 };
 const pickSplash = () => { const a = SPLASH[S && S.settings.lang === 'en' ? 'en' : 'pl']; return a[Math.floor(Math.random() * a.length)]; };
+// ───── aktualizacje w aplikacji ─────
+let U = null;
+function updText(u) {
+  if (!u || !u.supported) return t('upd.dev');
+  switch (u.status) {
+    case 'checking': return t('upd.checking');
+    case 'downloading': return t('upd.downloading', { v: u.version, p: u.percent });
+    case 'ready': return t('upd.ready', { v: u.version });
+    case 'none': return t('upd.none');
+    case 'error': return t('upd.error', { msg: u.error });
+    default: return t('upd.idle');
+  }
+}
+function buildUpdateCard() {
+  const busy = U && (U.status === 'checking' || U.status === 'downloading');
+  const kids = [el('h2', {}, t('upd.title')),
+    el('p', { class: 'small muted' }, t('upd.version', { v: (S && S.appVersion) || '?' })),
+    el('p', { class: 'small' }, updText(U))];
+  if (U && U.status === 'downloading') kids.push(el('div', { class: 'bar' }, el('i', { style: 'width:' + U.percent + '%' })));
+  kids.push(el('div', { class: 'row actions' },
+    U && U.status === 'ready'
+      ? el('button', { class: 'btn primary', onclick: () => act('update:install') }, t('upd.install'))
+      : el('button', { class: 'btn', disabled: !U || !U.supported || busy, onclick: async () => { const r = await act('update:check'); if (r) { U = r; refreshUpdate(); } } }, t('upd.check'))));
+  return el('div', { class: 'card', id: 'upd-card' }, ...kids);
+}
+function refreshUpdate() {
+  const old = document.getElementById('upd-card');
+  if (old) old.replaceWith(buildUpdateCard());
+  renderSidebar();
+}
+
 const THEMES = ['glass', 'neon', 'mc'];
 const applyTheme = () => {
   const th = S && THEMES.includes(S.settings.theme) ? S.settings.theme : 'glass';
@@ -576,6 +607,7 @@ function renderSettings(view) {
     el('div', { class: 'card' }, el('h2', {}, t('set.defaultsTitle')), el('p', { class: 'muted small' }, t('set.defaultsText'))),
     el('div', { class: 'card' }, el('h2', {}, t('set.hudTitle')), el('p', { class: 'muted small' }, t('set.hudText', { list: hudList })))));
 
+  view.append(buildUpdateCard());
   view.append(el('p', { class: 'small muted' }, t('set.dataDir', { dir: S.dataDir })));
 }
 
@@ -656,6 +688,11 @@ function renderSidebar() {
   const acc = selAccount();
   foot.replaceChildren(acc ? profileChip(acc) : el('button', { class: 'btn', onclick: () => go('accounts') }, t('acc.add')));
   document.getElementById('brand-sub').textContent = 'CLIENT';
+  if (U && (U.status === 'ready' || U.status === 'downloading')) {
+    foot.prepend(U.status === 'ready'
+      ? el('button', { class: 'btn primary upd-chip', onclick: () => act('update:install') }, t('upd.banner', { v: U.version }))
+      : el('div', { class: 'upd-chip small muted' }, t('upd.bannerDl', { p: U.percent })));
+  }
 }
 
 function render() {
@@ -689,11 +726,13 @@ bridge.on('game:progress', (p) => {
 });
 
 bridge.on('game:log', (line) => appendLog(line));
+bridge.on('update:state', (p) => { U = p; if (S) S.update = p; refreshUpdate(); });
 
 (async () => {
   try {
     const timer = setTimeout(() => showFatal('Launcher not responding', 'The main process did not answer app:init within 10 s. Check the terminal where npm start is running.'), 10000);
     S = await bridge.invoke('app:init');
+    U = S.update || null;
     clearTimeout(timer);
     game.running = S.running;
     render();

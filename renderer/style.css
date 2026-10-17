@@ -325,3 +325,5 @@ details.log summary { cursor: pointer; color: var(--muted); font-size: 13px; }
 .launch.done .launch-bar i { width: 100% !important; animation: none; }
 @keyframes logo-go { 40% { transform: scale(1.15); } 100% { transform: scale(2.4); opacity: 0; } }
 .launch.fail .launch-logo { animation: none; filter: grayscale(.8); }
+
+.upd-chip { width: 100%; margin-bottom: 10px; text-align: center; }

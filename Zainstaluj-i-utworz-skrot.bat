@@ -4,6 +4,16 @@ setlocal
 cd /d "%~dp0"
 title Kaczo Client - instalacja
 
+if not exist "%~dp0package.json" (
+  echo.
+  echo  Uruchomiono plik z samego archiwum ZIP/RAR - brakuje reszty plikow.
+  echo  Najpierw wypakuj CALY folder: prawy przycisk na pliku zip ^> Wypakuj wszystko,
+  echo  a potem uruchom ten plik z wypakowanego folderu.
+  echo.
+  pause
+  exit /b 1
+)
+
 echo.
 echo  === Kaczo Client: instalacja i skrot na pulpicie ===
 echo.

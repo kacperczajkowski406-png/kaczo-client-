@@ -7,6 +7,6 @@
   "authors": ["Kaczo"],
   "environment": "client",
   "entrypoints": { "client": ["pl.kaczo.hud.KaczoHudClient"] },
-  "mixins": ["kaczohud.mixins.json"],
+  "mixins": ["kaczohud.mixins.json", "kaczohud.visual.mixins.json"],
   "depends": { "fabricloader": ">=0.16.0", "minecraft": "${mc}", "fabric-api": "*" }
 }

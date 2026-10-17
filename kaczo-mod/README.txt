@@ -30,3 +30,5 @@ Aktualizacja: tablicę wyników można przesuwać (EDIT HUD lub 'Move on screen'
 Aktualizacja: nowoczesny wygląd „liquid glass” (domyślny; do wyboru też neon i klockowy w Ustawieniach), animowane wejście do gry, brak texture packa – logo na ekranie tytułowym, szklane przyciski i animacja są w modzie (Prawy Shift → Settings). Mod: nowe moduły (zdrowie, głód, XP, obrót, chunk, przedmiot w ręce, data, limit FPS, auto-skradanie, błysk obrażeń), grubość celownika, cień/pasek akcentu/margines dla każdego elementu HUD. Mod budowany dla 1.21–1.21.5.
 
 Wersje moda: 1.21, 1.21.1, 1.21.2, 1.21.3, 1.21.4, 1.21.5 oraz (eksperymentalnie, bez płynnego zanikania animacji) 1.21.6–1.21.8. Wersje, które się nie zbudują, są pomijane.
+
+Aktualizacje: aplikacja sama sprawdza GitHub Releases i aktualizuje się w tle (Ustawienia → Aktualizacje). Mod jest częścią instalatora, więc aktualizuje się razem z nią. Repozytorium musi być publiczne. W grze: animowany ekran ładowania zamiast czerwonego ekranu Mojang oraz szklane przyciski, logo i tło tylko na ekranie tytułowym (lobby).

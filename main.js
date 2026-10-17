@@ -13,6 +13,7 @@ const game = require('./src/game');
 const owner = require('./src/owner');
 const gameopts = require('./src/gameopts');
 const resourcepack = require('./src/resourcepack');
+const updater = require('./src/updater');
 const { T, GAME_LANG } = require('./src/lang');
 
 let win = null;
@@ -65,6 +66,7 @@ function createWindow() {
 
 app.whenReady().then(() => {
   if (process.platform !== 'darwin') Menu.setApplicationMenu(null);
+  updater.init(app, (ch, p) => emit(ch, p));
   purgeReservedOfflineAccounts();
   createWindow();
   app.on('activate', () => { if (!BrowserWindow.getAllWindows().length) createWindow(); });
@@ -126,6 +128,8 @@ function publicState() {
     settings: d.settings,
     hudVersions: mods.hudVersions(),
     dataDir: P.base,
+    appVersion: app.getVersion ? app.getVersion() : '',
+    update: updater.get(),
     running: game.isRunning(),
   };
 }
@@ -150,6 +154,9 @@ function cleanInstanceInput(input) {
 // ───────────────────────── stan i wersje ─────────────────────────
 
 handle('app:init', () => publicState());
+handle('update:state', () => updater.get());
+handle('update:check', () => updater.check());
+handle('update:install', () => { updater.install(); return true; });
 handle('versions:list', () => versions.listVersions());
 handle('versions:fabric', () => fabric.gameVersions());
 

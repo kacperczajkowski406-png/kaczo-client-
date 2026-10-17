@@ -11,8 +11,9 @@ const INVOKE = new Set([
   'owner:diagnostics', 'owner:copyDiagnostics', 'owner:openLogs', 'owner:devtools',
   'owner:resetOptions', 'owner:clearJava', 'owner:discordId', 'owner:blockNick', 'owner:unblockNick',
   'game:play', 'game:stop',
+  'update:check', 'update:install', 'update:state',
 ]);
-const EVENTS = new Set(['game:state', 'game:progress', 'game:log']);
+const EVENTS = new Set(['game:state', 'game:progress', 'game:log', 'update:state']);
 
 contextBridge.exposeInMainWorld('api', {
   invoke: async (channel, ...args) => {

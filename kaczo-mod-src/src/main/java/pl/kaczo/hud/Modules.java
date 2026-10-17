@@ -42,6 +42,8 @@ public class Modules {
         GENERAL.add(Setting.bool("titlelogo", "Logo on title screen", true));
         GENERAL.add(Setting.bool("intro", "Intro animation", true));
         GENERAL.add(Setting.bool("hudanim", "Animate HUD on join", true));
+        GENERAL.add(Setting.bool("titlebg", "Animated title background", true));
+        GENERAL.add(Setting.bool("loadscreen", "Custom loading screen", true));
         GENERAL.add(Setting.num("logosize", "Title logo size %", 40, 140, 80));
 
         reg(new Module("fps", "FPS", "Frames per second.", "HUD", "FPS").on().hud(6, 6)
